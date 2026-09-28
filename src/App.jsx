@@ -11,32 +11,37 @@ import { useChatStore } from "./lib/chatStore";
 
 const App = () => {
   const { currentUser, isLoading, fetchUserInfo } = useUserStore();
-  const { chatId } = useChatStore();
+  const { chatId, showDetail, resetChat } = useChatStore();
 
   useEffect(() => {
     const unSub = onAuthStateChanged(auth, (user) => {
+      if (!user) resetChat();
       fetchUserInfo(user?.uid);
     });
     return () => {
       unSub();
     };
-  }, [fetchUserInfo]);
+  }, [fetchUserInfo, resetChat]);
 
   if (isLoading) return <div className="loading">Loading...</div>;
 
+  const containerClass = `container${chatId ? " chat-open" : ""}${showDetail ? " detail-open" : ""}`;
+
   return (
-    <div className="container">
-      {currentUser ? (
-        <>
-          <List />
-          {chatId && <Chat />}
-          {chatId && <Detail />}
-        </>
-      ) : (
-        <Login />
-      )}
+    <>
+      <div className={containerClass}>
+        {currentUser ? (
+          <>
+            <List />
+            {chatId && <Chat />}
+            {chatId && <Detail />}
+          </>
+        ) : (
+          <Login />
+        )}
+      </div>
       <Notification />
-    </div>
+    </>
   );
 };
 

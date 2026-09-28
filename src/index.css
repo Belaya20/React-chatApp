@@ -6,8 +6,10 @@
     "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
 }
 
-body{
-  background-image: url("bgimage.jpg");
+body {
+  background-image: url("/bgimage.jpg");
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -15,19 +17,182 @@ body{
   color: white;
 }
 
-.container{
+.container {
+  position: relative;
   width: 80vw;
   height: 90vh;
-  background-color: rgb(17, 25, 40,0.75);
+  background-color: rgb(17, 25, 40, 0.75);
   border-radius: 12px;
-  backdrop-filter: blur(19px) saturate(180px);
-  border: 1px solid rgba(255,255,255,0.125);
+  backdrop-filter: blur(19px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.125);
   display: flex;
 }
 
-.loading{
+.loading {
   padding: 50px;
   font-size: 36px;
   border-radius: 10px;
   background-color: #090a09;
+}
+
+/* ---------- shared small controls ---------- */
+.container .backBtn {
+  display: none;
+}
+
+.container .infoBtn {
+  cursor: pointer;
+}
+
+.container .chatList {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.container .chat .bottom .emoji .picker {
+  left: auto;
+  right: 0;
+}
+
+/* ---------- message extras (links, time, mic) ---------- */
+.container .chat .center .message .texts a {
+  color: #9fd3ff;
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
+.container .chat .center .message .texts span.time {
+  font-size: 11px;
+  color: #a5a5a5;
+}
+
+.container .chat .center .message.own .texts span.time {
+  align-self: flex-end;
+}
+
+.container .chat .bottom .icons img.micActive {
+  outline: 2px solid #e74c3c;
+  border-radius: 50%;
+  animation: micPulse 1s infinite;
+}
+
+@keyframes micPulse {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+/* ---------- mobile: one panel at a time ---------- */
+@media (max-width: 768px) {
+  body {
+    height: 100dvh;
+  }
+
+  .container {
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    border: none;
+  }
+
+  .container .list,
+  .container .chat,
+  .container .detail {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  .container.chat-open .list {
+    display: none;
+  }
+
+  .container:not(.detail-open) .detail {
+    display: none;
+  }
+
+  .container.detail-open .chat {
+    display: none;
+  }
+
+  .container .backBtn {
+    display: inline-block;
+    width: auto;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 22px;
+    cursor: pointer;
+    padding: 8px 12px;
+  }
+
+  .container .addUser {
+    width: calc(100% - 24px);
+    padding: 16px;
+  }
+
+  .container .addUser form {
+    gap: 10px;
+  }
+
+  .container .addUser form input {
+    flex: 1;
+    min-width: 0;
+    padding: 14px;
+  }
+
+  .container .addUser form button {
+    padding: 14px;
+  }
+
+  .container .chat .top {
+    padding: 12px;
+  }
+
+  .container .chat .top .user {
+    gap: 10px;
+  }
+
+  .container .chat .top .user img {
+    width: 44px;
+    height: 44px;
+  }
+
+  .container .chat .center {
+    padding: 12px;
+  }
+
+  .container .chat .center .message {
+    max-width: 85%;
+  }
+
+  .container .chat .center .message .texts img {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+  }
+
+  .container .chat .center .message .texts p {
+    padding: 12px 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .container .chat .bottom {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .container .chat .bottom .icons {
+    gap: 12px;
+  }
+
+  .container .chat .bottom input[type="text"] {
+    min-width: 0;
+    padding: 12px;
+  }
+
+  .container .picker .EmojiPickerReact {
+    max-width: calc(100vw - 24px);
+  }
 }

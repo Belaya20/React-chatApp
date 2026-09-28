@@ -114,6 +114,31 @@
         
     
 
+.detail {
+  overflow-y: auto;
+}
+
+.detail .info .option .title {
+  cursor: pointer;
+}
+
+.detail .info .option .content {
+  margin-top: 12px;
+  font-size: 14px;
+  font-weight: 300;
+  color: lightgray;
+  line-height: 1.6;
+}
+
+.detail .info .option .photos {
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.detail .info .option .photos .photoItem a {
+  display: flex;
+}
+
 
     
 

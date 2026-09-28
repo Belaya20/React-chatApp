@@ -1,30 +1,132 @@
-.userInfo{
-    padding: 20px;
+.userInfo {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  .user {
     display: flex;
     align-items: center;
-    justify-content:space-between;
+    gap: 20px;
 
-    .user{
-        display: flex;
-        align-items: center;
-        gap: 20px;
-
-        img{
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
+    img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
     }
-    .icons{
-        display: flex;
-        gap: 20px;
-        img{
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
+  }
+
+  .icons {
+    position: relative;
+    display: flex;
+    gap: 20px;
+
+    img {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
     }
 
+    .menu {
+      position: absolute;
+      top: 32px;
+      right: 0;
+      z-index: 5;
+      min-width: 150px;
+      display: flex;
+      flex-direction: column;
+      background-color: rgba(17, 25, 40, 0.97);
+      border: 1px solid rgba(255, 255, 255, 0.125);
+      border-radius: 8px;
+      overflow: hidden;
+
+      button {
+        padding: 12px 16px;
+        background: none;
+        border: none;
+        color: white;
+        text-align: left;
+        cursor: pointer;
+
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+    }
+  }
+}
+
+.editOverlay {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 12px;
+}
+
+.editProfile {
+  width: min(360px, calc(100% - 32px));
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  background-color: rgba(17, 25, 40, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.125);
+  border-radius: 10px;
+
+  h3 {
+    text-align: center;
+  }
+
+  .editAvatar {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    cursor: pointer;
+    text-decoration: underline;
+
+    img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+  }
+
+  input[type="text"] {
+    padding: 14px;
+    border: none;
+    outline: none;
+    background-color: rgb(37, 37, 36);
+    color: white;
+    border-radius: 5px;
+  }
+
+  .editActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    button {
+      padding: 10px 18px;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      background-color: #127db7;
+
+      &[type="button"] {
+        background-color: #555;
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
+  }
 }

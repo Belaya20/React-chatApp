@@ -9,61 +9,73 @@ import { useChatStore } from "../../../lib/chatStore";
 const ChatList = () => {
   const [chats, setChats] = useState([]);
   const [addMode, setAddMode] = useState(false);
+  const [input, setInput] = useState("");
   const { currentUser } = useUserStore();
   const { changeChat } = useChatStore();
+  const userId = currentUser?.id;
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!userId) return;
 
-    const unSub = onSnapshot(doc(db, "userchats", currentUser.id), async (res) => {
-      const items = res.data()?.chats || [];
+    const unSub = onSnapshot(
+      doc(db, "userchats", userId),
+      async (res) => {
+        const items = res.data()?.chats || [];
 
-      const promises = items.map(async (item) => {
-        const userDocRef = doc(db, "users", item.receiverId);
-        const userDocSnap = await getDoc(userDocRef);
-        const user = userDocSnap.data();
-        return { ...item, user };
-      });
+        const chatData = await Promise.all(
+          items.map(async (item) => {
+            const userSnap = await getDoc(doc(db, "users", item.receiverId));
+            return { ...item, user: userSnap.data() };
+          })
+        );
 
-      const chatData = await Promise.all(promises);
-      setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
-    });
+        setChats(chatData.sort((a, b) => b.updatedAt - a.updatedAt));
+      },
+      (err) => console.log(err)
+    );
 
     return () => {
       unSub();
     };
-  }, [currentUser]);
+  }, [userId]);
 
   const handleSelect = async (chat) => {
+    changeChat(chat.chatId, chat.user);
+    setAddMode(false);
+
+    if (chat.isSeen) return;
+
     const userChats = chats.map((item) => {
       const { user, ...rest } = item;
       return rest;
     });
 
-    const chatIndex = userChats.findIndex((item) => item.chatId === chat.chatId);
-
-    if (chatIndex !== -1) {
-      userChats[chatIndex].isSeen = true;
-    }
-
-    const userChatsRef = doc(db, "userchats", currentUser.id);
+    const index = userChats.findIndex((item) => item.chatId === chat.chatId);
+    if (index === -1) return;
+    userChats[index].isSeen = true;
 
     try {
-      await updateDoc(userChatsRef, {
-        chats: userChats,
-      });
-      changeChat(chat.chatId, chat.user);
+      await updateDoc(doc(db, "userchats", userId), { chats: userChats });
     } catch (err) {
       console.log("Error updating user chats: ", err);
     }
   };
+
+  const filteredChats = chats.filter((c) =>
+    (c.user?.username || "").toLowerCase().includes(input.toLowerCase())
+  );
 
   return (
     <div className="chatList">
       <div className="search">
         <div className="searchBar">
           <img src="./search.png" alt="" />
-          <input type="text" placeholder="Search" />
+          <input
+            type="text"
+            placeholder="Search"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
         </div>
         <img
           src={addMode ? "./minus.png" : "./plus.png"}
@@ -73,7 +85,7 @@ const ChatList = () => {
         />
       </div>
 
-      {chats.map((chat) => (
+      {filteredChats.map((chat) => (
         <div
           className="item"
           key={chat.chatId}
@@ -90,7 +102,7 @@ const ChatList = () => {
         </div>
       ))}
 
-      {addMode && <AddUser />}
+      {addMode && <AddUser onClose={() => setAddMode(false)} />}
     </div>
   );
 };
